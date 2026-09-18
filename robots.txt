@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://prostoru.in.net/sitemap.xml
