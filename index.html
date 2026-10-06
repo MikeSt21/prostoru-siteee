@@ -906,6 +906,52 @@ html[data-theme="dark"] .footer-icon{
   }
 }
 
+
+/* Мінімалістичний кастомний курсор */
+@media (pointer: fine) {
+  html, body, a, button, [role="button"], input, select, textarea, summary, .btn {
+    cursor: none !important;
+  }
+
+  .lp-cursor {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 12px;
+    height: 12px;
+    border: 2px solid #10d8d3;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 999999;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition:
+      width .18s ease,
+      height .18s ease,
+      background-color .18s ease,
+      border-color .18s ease,
+      opacity .18s ease;
+  }
+
+  .lp-cursor.visible { opacity: 1; }
+
+  .lp-cursor.hover {
+    width: 24px;
+    height: 24px;
+    background: rgba(16, 216, 211, .14);
+  }
+
+  .lp-cursor.click {
+    width: 9px;
+    height: 9px;
+    background: rgba(16, 216, 211, .30);
+  }
+}
+
+@media (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .lp-cursor { display: none !important; }
+}
+
 </style>
 
 <script>
@@ -921,6 +967,7 @@ html[data-theme="dark"] .footer-icon{
 
 </head>
 <body>
+<div class="lp-cursor" aria-hidden="true"></div>
 
 <header>
   <a href="#top" class="brand">
@@ -1331,6 +1378,37 @@ html[data-theme="dark"] .footer-icon{
     }),{threshold:.12});
     items.forEach((el,i)=>{el.style.transitionDelay=(i%4)*60+'ms';o.observe(el)})
   } else items.forEach(el=>el.classList.add('show'));
+})();
+</script>
+
+
+<script>
+(() => {
+  if (!window.matchMedia('(pointer: fine)').matches) return;
+
+  const cursor = document.querySelector('.lp-cursor');
+  if (!cursor) return;
+
+  const interactive = 'a, button, [role="button"], input, select, textarea, summary, .btn';
+
+  document.addEventListener('mousemove', (e) => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+    cursor.classList.add('visible');
+  }, { passive: true });
+
+  document.addEventListener('mouseover', (e) => {
+    if (e.target.closest(interactive)) cursor.classList.add('hover');
+  });
+
+  document.addEventListener('mouseout', (e) => {
+    if (e.target.closest(interactive)) cursor.classList.remove('hover');
+  });
+
+  document.addEventListener('mousedown', () => cursor.classList.add('click'));
+  document.addEventListener('mouseup', () => cursor.classList.remove('click'));
+  document.addEventListener('mouseleave', () => cursor.classList.remove('visible'));
+  document.addEventListener('mouseenter', () => cursor.classList.add('visible'));
 })();
 </script>
 
