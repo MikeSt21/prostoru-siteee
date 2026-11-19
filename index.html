@@ -267,6 +267,13 @@ h2 em{font-style:normal;color:#7396ab;font-weight:500}
 .project-body h3{margin:0 0 9px;font-size:25px;letter-spacing:-.03em}
 .project-body p{margin:0;max-width:620px;color:#839eaf;font-size:14px;line-height:1.65}
 
+.project-cta{display:inline-flex;align-items:center;gap:8px;margin-top:18px;color:var(--cyan);font-size:13px;font-weight:700;text-decoration:none;letter-spacing:.01em}
+.project-cta:hover{gap:12px}
+.v-material{display:block;background:#06131f;isolation:isolate}
+.v-material img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 15%;transition:transform .7s cubic-bezier(.22,.61,.36,1),filter .35s ease}
+.v-material::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 35%,rgba(3,15,25,.28));pointer-events:none}
+.project:hover .v-material img,.project:focus-within .v-material img{transform:scale(1.025);filter:saturate(1.04)}
+
 .contact{
   margin:0 auto 28px;width:min(calc(100% - 40px),var(--max));min-height:530px;padding:64px;
   border:1px solid var(--line);border-radius:25px;position:relative;overflow:hidden;
@@ -952,6 +959,115 @@ html[data-theme="dark"] .footer-icon{
   .lp-cursor { display: none !important; }
 }
 
+
+/* --- Micro-parallax + living project borders --- */
+:root{
+  --parallax-x: 0px;
+  --parallax-y: 0px;
+  --parallax-x-inv: 0px;
+  --parallax-y-inv: 0px;
+}
+
+/* Мікропаралакс фону — дуже стриманий, без "плаваючого" контенту */
+.hero .grid{
+  transform:translate3d(var(--parallax-x),var(--parallax-y),0) scale(1.035);
+  transform-origin:center;
+  will-change:transform;
+  transition:transform .16s cubic-bezier(.22,.61,.36,1);
+}
+.hero-art::before{
+  transform:translate3d(var(--parallax-x-inv),var(--parallax-y-inv),0);
+  will-change:transform;
+  transition:transform .20s cubic-bezier(.22,.61,.36,1);
+}
+.statement::before{
+  transform:translate3d(var(--parallax-x-inv),var(--parallax-y-inv),0);
+  will-change:transform;
+  transition:transform .24s cubic-bezier(.22,.61,.36,1);
+}
+
+/* "Жива" рамка карток ініціатив */
+@property --project-border-angle{
+  syntax:"<angle>";
+  inherits:false;
+  initial-value:0deg;
+}
+.project{
+  position:relative;
+  isolation:isolate;
+}
+.project::before{
+  content:"";
+  position:absolute;
+  inset:-1px;
+  z-index:5;
+  pointer-events:none;
+  border-radius:inherit;
+  padding:1.5px;
+  background:
+    conic-gradient(
+      from var(--project-border-angle),
+      transparent 0deg,
+      transparent 235deg,
+      rgba(16,216,211,.10) 260deg,
+      rgba(16,216,211,.95) 292deg,
+      rgba(36,184,255,.58) 314deg,
+      transparent 344deg,
+      transparent 360deg
+    );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;
+  mask-composite:exclude;
+  opacity:0;
+  transition:opacity .28s ease;
+  filter:drop-shadow(0 0 7px rgba(16,216,211,.18));
+}
+.project:hover::before,
+.project:focus-within::before{
+  opacity:1;
+  animation:projectBorderOrbit 2.8s linear infinite;
+}
+@keyframes projectBorderOrbit{
+  to{--project-border-angle:360deg}
+}
+
+/* дуже легке підсвічення самої картки */
+.project{
+  transition:
+    box-shadow .35s ease,
+    border-color .35s ease,
+    background-color .35s ease;
+}
+.project:hover,
+.project:focus-within{
+  border-color:rgba(16,216,211,.18);
+  box-shadow:
+    0 24px 70px rgba(0,0,0,.16),
+    inset 0 0 0 1px rgba(16,216,211,.025);
+}
+
+html[data-theme="light"] .project:hover,
+html[data-theme="light"] .project:focus-within{
+  box-shadow:
+    0 22px 55px rgba(18,62,87,.09),
+    inset 0 0 0 1px rgba(8,191,196,.035);
+}
+
+@media (pointer:coarse), (prefers-reduced-motion:reduce){
+  .hero .grid,
+  .hero-art::before,
+  .statement::before{
+    transform:none!important;
+    transition:none!important;
+  }
+  .project:hover::before,
+  .project:focus-within::before{
+    animation:none!important;
+  }
+}
+
 </style>
 
 <script>
@@ -1108,6 +1224,19 @@ html[data-theme="dark"] .footer-icon{
           <div class="arch"></div><div class="cut"></div><div class="base"></div>
         </div>
         <div class="project-body"><h3 data-editable="1">Нове життя спадщини</h3><p data-editable="1">Сценарії адаптивного використання історичних об’єктів без втрати їхньої локальної ідентичності.</p></div>
+      </article>
+
+
+      <article class="project project-wide reveal"><button class="project-remove" type="button" title="Видалити цей проєкт" aria-label="Видалити цей проєкт">×</button>
+        <div class="project-top"><span>04</span><span>мобільність · дослідження</span></div>
+        <a class="visual v-material" href="/materials/transport-reform-valky.html" aria-label="Відкрити концепцію реформи громадського транспорту Валківської громади">
+          <img src="/materials/transport-reform-valky-cover.png" alt="Обкладинка концепції реформи системи громадського транспорту Валківської громади">
+        </a>
+        <div class="project-body">
+          <h3>Концепція реформи громадського транспорту Валківської громади</h3>
+          <p>Нова маршрутна мережа, інтеграція із залізницею, варіанти оновлення рухомого складу, цифрові сервіси, навігація та єдина айдентика.</p>
+          <a class="project-cta" href="/materials/transport-reform-valky.html">Переглянути матеріал <span aria-hidden="true">→</span></a>
+        </div>
       </article>
     </div>
   </div>
@@ -1409,6 +1538,44 @@ html[data-theme="dark"] .footer-icon{
   document.addEventListener('mouseup', () => cursor.classList.remove('click'));
   document.addEventListener('mouseleave', () => cursor.classList.remove('visible'));
   document.addEventListener('mouseenter', () => cursor.classList.add('visible'));
+})();
+</script>
+
+
+<script>
+(() => {
+  if (!window.matchMedia('(pointer: fine)').matches) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const root = document.documentElement;
+  let raf = 0;
+  let latestX = innerWidth / 2;
+  let latestY = innerHeight / 2;
+
+  const render = () => {
+    raf = 0;
+    const nx = (latestX / innerWidth - .5) * 2;
+    const ny = (latestY / innerHeight - .5) * 2;
+
+    // Лише кілька пікселів: ефект помітний, але не відволікає.
+    root.style.setProperty('--parallax-x', `${(nx * 8).toFixed(2)}px`);
+    root.style.setProperty('--parallax-y', `${(ny * 6).toFixed(2)}px`);
+    root.style.setProperty('--parallax-x-inv', `${(-nx * 11).toFixed(2)}px`);
+    root.style.setProperty('--parallax-y-inv', `${(-ny * 8).toFixed(2)}px`);
+  };
+
+  document.addEventListener('pointermove', (e) => {
+    latestX = e.clientX;
+    latestY = e.clientY;
+    if (!raf) raf = requestAnimationFrame(render);
+  }, { passive:true });
+
+  document.addEventListener('mouseleave', () => {
+    root.style.setProperty('--parallax-x', '0px');
+    root.style.setProperty('--parallax-y', '0px');
+    root.style.setProperty('--parallax-x-inv', '0px');
+    root.style.setProperty('--parallax-y-inv', '0px');
+  });
 })();
 </script>
 
